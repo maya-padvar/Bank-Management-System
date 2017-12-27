@@ -74,13 +74,14 @@ public class LoginDAO {
     public static boolean checkIfPasswordValid(String username, String password) throws SQLException {
         //Before querying, hash the password to some arbitrary value
         boolean checkValues = false;
-        String query = "SELECT username, password FROM customer WHERE username='" + username + "' AND password='" + password + "'";
+        PreparedStatement myStatement = null;
+        myStatement = myCon.prepareStatement("SELECT username, password FROM customer WHERE username='?' AND password='?'");
+        myStatement.setString(1, username);
+        myStatement.setString(2, password);
 
         try {
             // Excecute the query based on what they have typed
-            myStat = myCon.createStatement();
-
-            result = myStat.executeQuery(query);
+           result = myStatement.execute();
 
             //If we can move within the result set, a record exists. Thus, a matching user was found
             if (result.next()) {
